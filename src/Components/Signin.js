@@ -30,7 +30,7 @@ function Signin() {
 
   return (
     <div className="signin-page">
-      <nav className="navbar">
+      <nav className="navbar-i">
         <div className="logo">QuickShip</div>
         <ul>
           <li><Link to="/">Home</Link></li>

@@ -6,7 +6,7 @@
   background-color: #f0f0f0;
 }
 
-.navbar {
+.navbar-i {
   position: absolute;
   top: 0;
   width: 100%;
@@ -15,22 +15,22 @@
   align-items: center;
   background-color: black;
   padding: 20px;
-  color: white;
 }
 
-.navbar .logo {
+.logo {
   font-size: 24px;
   font-weight: bold;
   color: white;
 }
 
-.navbar ul {
+.signin-page ul {
   list-style-type: none;
   display: flex;
   gap: 20px;
+  color:white;
 }
 
-.navbar ul li a {
+.signin-page ul li a{
   color: white;
   text-decoration: none;
   padding: 10px;
