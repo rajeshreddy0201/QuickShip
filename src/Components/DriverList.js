@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, Routes, Route } from 'react-router-dom';
-import { ref, push, set } from 'firebase/database'; 
+import { ref, push, set, onValue, remove } from 'firebase/database'; 
 import History from './History';
 import CurrentPackages from './CurrentPackages';
 import { database } from '../firebase'; 
@@ -16,6 +16,15 @@ function DriverList({ addDriver }) {
     username: '',
     password: ''
   });
+
+  useEffect(() => {
+    const driversRef = ref(database, 'drivers');
+    onValue(driversRef, (snapshot) => {
+      const data = snapshot.val();
+      const driversList = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+      setDrivers(driversList);
+    });
+  }, []);
 
   const handleAddDriver = () => {
     if (
@@ -34,10 +43,9 @@ function DriverList({ addDriver }) {
 
     set(newDriverRef, driverData)
       .then(() => {
-        setDrivers([...drivers, driverData]);
         setNewDriver({ name: '', phoneNumber: '', email: '', username: '', password: '' });
         setShowForm(false);
-        addDriver(driverData);
+        //addDriver(driverData);
       })
       .catch((error) => {
         console.error('Error adding driver: ', error);
@@ -53,6 +61,16 @@ function DriverList({ addDriver }) {
 
   const handleShowForm = () => {
     setShowForm(true);
+  };
+
+  const handleDeleteDriver = (id) => {
+    remove(ref(database, `drivers/${id}`))
+      .then(() => {
+        setDrivers(drivers.filter(driver => driver.id !== id));
+      })
+      .catch((error) => {
+        console.error('Error deleting driver: ', error);
+      });
   };
 
   return (
@@ -87,16 +105,20 @@ function DriverList({ addDriver }) {
                   <th>Email</th>
                   <th>Username</th>
                   <th>Password</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {drivers.map((driver, index) => (
-                  <tr key={index}>
+                {drivers.map((driver) => (
+                  <tr key={driver.id}>
                     <td>{driver.name}</td>
                     <td>{driver.phoneNumber}</td>
                     <td>{driver.email}</td>
                     <td>{driver.username}</td>
-                    <td>{driver.password}</td>
+                    <td>{'*'.repeat(driver.password.length)}</td> {/* Masking the password */}
+                    <td>
+                      <button className="delete-button" onClick={() => handleDeleteDriver(driver.id)}>Delete</button>
+                    </td>
                   </tr>
                 ))}
               </tbody>

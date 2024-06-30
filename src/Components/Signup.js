@@ -37,7 +37,7 @@ function Signup({ addDriver }) {
         password
       };
       await set(ref(database, 'drivers/' + user.uid), driverData);
-      addDriver(driverData);
+      //addDriver(driverData);
       navigate('/driverhome');
     } catch (err) {
       setError(err.message);

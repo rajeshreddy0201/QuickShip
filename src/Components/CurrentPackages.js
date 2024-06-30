@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, Routes, Route } from 'react-router-dom';
 import DriverList from './DriverList';
 import History from './History';
-import { ref, push, set } from 'firebase/database';
+import { ref, push, set, onValue, remove } from 'firebase/database';
 import { database } from '../firebase';
 import './CurrentPackages.css';
 
@@ -15,12 +15,39 @@ function CurrentPackages({ addPackage }) {
     quantity: ''
   });
 
+  useEffect(() => {
+    const packagesRef = ref(database, 'packages');
+    onValue(packagesRef, (snapshot) => {
+      const data = snapshot.val();
+      const packagesArray = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+      setPackageList(packagesArray);
+    });
+  }, []);
+
   const handleAddPackage = () => {
+    if (!newPackage.name || !newPackage.from || !newPackage.to || !newPackage.quantity) {
+      alert('All fields are required');
+      return;
+    }
+
     const newPackageRef = push(ref(database, 'packages'));
-    set(newPackageRef, newPackage);
-    setPackageList([...packageList, newPackage]);
-    setNewPackage({ name: '', from: '', to: '', quantity: '' });
-    addPackage(newPackage); 
+    set(newPackageRef, newPackage)
+      .then(() => {
+        setNewPackage({ name: '', from: '', to: '', quantity: '' });
+      })
+      .catch((error) => {
+        console.error('Error adding package: ', error);
+      });
+  };
+
+  const handleDeletePackage = (id) => {
+    remove(ref(database, `packages/${id}`))
+      .then(() => {
+        setPackageList(packageList.filter(pkg => pkg.id !== id));
+      })
+      .catch((error) => {
+        console.error('Error deleting package: ', error);
+      });
   };
 
   const handleChange = (e) => {
@@ -74,7 +101,7 @@ function CurrentPackages({ addPackage }) {
                     <td>{pkg.quantity}</td>
                     <td>
                       <button className="assign-button">Assign Package</button>
-                      <button className="delete-button">Delete Package</button>
+                      <button className="delete-button" onClick={() => handleDeletePackage(pkg.id)}>Delete Package</button>
                     </td>
                   </tr>
                 ))}

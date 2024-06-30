@@ -52,7 +52,7 @@
   
   .side-image1 {
     flex: 1;
-    background: url('./side1-image.jpg') no-repeat center center; /* Image from the components directory */
+    background: url('./side1-image.jpg') no-repeat center center; 
     background-size: cover;
   }
   
@@ -119,7 +119,7 @@
   }
   
   .signin-link a {
-    color: red; /* Red color for the sign-up link */
+    color: red;
     text-decoration: none;
     font-weight: bold;
   }
