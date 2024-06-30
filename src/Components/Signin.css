@@ -21,12 +21,13 @@
   font-size: 24px;
   font-weight: bold;
   color: white;
+
 }
 
 .signin-page ul {
   list-style-type: none;
   display: flex;
-  gap: 20px;
+  gap: 10px;
   color:white;
 }
 
@@ -39,8 +40,9 @@
 
 .signin-content {
   display: flex;
-  width: 80%;
-  max-width: 1200px;
+  height:100vh;
+  width: 100%;
+  max-width: 12000px;
   background: white;
   border-radius: 15px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -49,11 +51,11 @@
 
 .side-image {
   flex: 1;
-  background: url('./side1-image.jpg') no-repeat center center; /* Image from the components directory */
+  background: url('./side-image.jpg') no-repeat center center; /* Image from the components directory */
   background-size: cover;
 }
 
-.form-container {
+.form-containersignin {
   flex: 1;
   padding: 40px;
   display: flex;
@@ -61,53 +63,72 @@
   justify-content: center;
 }
 
-.form-container h2 {
+.form-containersignin h2 {
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 20px;
 }
 
-.form-container form {
+.form-containersignin form {
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
 
-.form-container input[type="email"],
-.form-container input[type="password"] {
+.form-containersignin input[type="email"],
+.form-containersignin input[type="password"] {
   padding: 15px;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 30px;
   font-size: 16px;
+  width:400px;
+  margin-left:100px;
 }
 
-.form-container button {
+.form-containersignin button {
   padding: 15px;
-  background-color: #6200ea;
+  background-color:black;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 30px;
   font-size: 16px;
   cursor: pointer;
   font-weight: bold;
   margin-top: 10px;
+  width:300px;
+  margin-left: 103px;
 }
 
-.form-container button:hover {
-  background-color: #3700b3;
+.form-containersignin button:hover {
+  background-color: rgba(39, 38, 38, 0.378);
 }
 
-.signin-link {
+.signup-link {
   margin-top: 20px;
   text-align: center;
+  width:400px;
+  margin-left: 25px;
 }
 
-.signin-link a {
-  color: #6200ea;
+.signup-link a {
+  color: red;
   text-decoration: none;
   font-weight: bold;
 }
 
-.signin-link a:hover {
+.signup-link a:hover {
   text-decoration: underline;
 }
+
+.highlight {
+  color: black;
+  font-weight: bold;
+  margin-left: 100px;
+  
+}
+.highlight1 {
+  color: black;
+  font-weight: bold;
+  
+}
+

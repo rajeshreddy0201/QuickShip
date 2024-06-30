@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { auth } from '../firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { ref, get } from 'firebase/database';
+import { auth, database } from '../firebase';
 import './Signin.css';
 
 const adminEmail = 'admin@example.com';
@@ -16,12 +18,17 @@ function Signin() {
     event.preventDefault();
     try {
       if (email === adminEmail && password === adminPassword) {
-        // Admin login
         navigate('/adminhome');
       } else {
-        // Driver login
-        await auth.signInWithEmailAndPassword(email, password);
-        navigate('/driverhome');
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        const userRef = ref(database, 'drivers/' + user.uid);
+        const userSnapshot = await get(userRef);
+        if (userSnapshot.exists()) {
+          navigate('/driverhome', { state: { email: user.email } });
+        } else {
+          throw new Error('User not found in database');
+        }
       }
     } catch (err) {
       setError(err.message);
@@ -40,8 +47,11 @@ function Signin() {
       </nav>
       <div className="signin-content">
         <div className="side-image"></div>
-        <div className="form-container">
-          <h2>Login</h2>
+        <div className="form-containersignin">
+          <h1>
+            <span className="highlight">QUICK</span>
+            <span className="highlight1">SHIP</span>
+          </h1>
           <form onSubmit={handleSignin}>
             <input
               type="email"
@@ -60,7 +70,7 @@ function Signin() {
             <button type="submit">Log in</button>
           </form>
           {error && <p>{error}</p>}
-          <div className="signin-link">
+          <div className="signup-link">
             <p>Don't have an account? <Link to="/signup">Sign up</Link></p>
           </div>
         </div>

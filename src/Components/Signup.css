@@ -1,29 +1,37 @@
 .signup-page {
-    background-size: cover;
-    background-position: center;
-    height: 100vh;
     display: flex;
+    height: 100vh;
+    align-items:center;
     justify-content: center;
-    align-items: center;
+    background-color: #f0f0f0;
+    padding:-5px;
   }
   
-  .navbar {
+  .navbar-i {
     position: absolute;
     top: 0;
     width: 100%;
     display: flex;
-    justify-content: flex-end;
-    background-color: transparent;
-    padding: 20px;
+    justify-content: space-between;
+    align-items: center;
+    background-color: black;
+    padding: 15px;
   }
   
-  .navbar ul {
+  .logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+  }
+  
+  .signup-page ul {
     list-style-type: none;
     display: flex;
-    gap: 20px;
+    gap: 10px;
+    color:white;
   }
   
-  .navbar ul li a {
+  .signup-page ul li a{
     color: white;
     text-decoration: none;
     padding: 10px;
@@ -32,27 +40,35 @@
   
   .signup-content {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    padding-top: 90px;
+    height:100vh;
     width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    background: rgba(255, 255, 255, 0.9);
+    max-width: 1500px;
+    background: white;
     border-radius: 15px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     overflow: hidden;
   }
   
-  .form-container {
+  .side-image1 {
     flex: 1;
-    padding: 40px;
+    background: url('./side1-image.jpg') no-repeat center center; /* Image from the components directory */
+    background-size: cover;
+  }
+  
+  .form-container {
+    
+    flex: 1;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
   
   .form-container h2 {
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 20px;
-    text-align: center;
   }
   
   .form-container form {
@@ -65,9 +81,9 @@
   .form-container input[type="email"],
   .form-container input[type="password"],
   .form-container input[type="date"] {
-    padding: 10px;
+    padding: 15px;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 30px; /* Match the border radius of the login button */
     font-size: 16px;
   }
   
@@ -82,19 +98,19 @@
   }
   
   .form-container button {
-    margin-top: 20px;
     padding: 15px;
-    background-color: #6200ea;
+    background-color: black;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 30px;
     font-size: 16px;
     cursor: pointer;
     font-weight: bold;
+    margin-top: 10px;
   }
   
   .form-container button:hover {
-    background-color: #3700b3;
+    background-color: rgba(39, 38, 38, 0.378);
   }
   
   .signin-link {
@@ -103,17 +119,11 @@
   }
   
   .signin-link a {
-    color: #6200ea;
+    color: red; /* Red color for the sign-up link */
     text-decoration: none;
     font-weight: bold;
   }
   
   .signin-link a:hover {
     text-decoration: underline;
-  }
-  
-  .side-image {
-    flex: 1;
-    background: url('./side1-image.jpg') no-repeat center center; /* Image from the components directory */
-    background-size: cover;
   }

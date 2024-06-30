@@ -1,38 +1,56 @@
-import React, { useEffect, useState } from "react";
-import { db } from '../firebase';
-import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
+import React from 'react';
+import { Link, Route, Routes } from 'react-router-dom';
+import CurrentPackages from './CurrentPackages';
+import DriverList from './DriverList';
+import History from './History';
+import './AdminHome.css';
 
-
-const AdminHome = () => {
-    const [packages, setPackages] = useState([]);
-
-    useEffect(() => {
-        const fetchPackages = async () => {
-            const querySnapshot = await getDocs(collection(db, "packages"));
-            setPackages(querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })));
-        };
-        fetchPackages();
-    }, []);
-
-    const assignDriver = async (packageId, driverId) => {
-        const packageRef = doc(db, "packages", packageId);
-        await updateDoc(packageRef, { driverId });
-    };
-
-    return (
-        <div className="container">
-            <h1>Admin Home</h1>
-            <h2>Package List</h2>
-            <ul>
-                {packages.map(pkg => (
-                    <li key={pkg.id}>
-                        {pkg.name} - {pkg.address}
-                        <button onClick={() => assignDriver(pkg.id, "driver@example.com")}>Assign Driver</button>
-                    </li>
-                ))}
-            </ul>
-        </div>
-    );
-};
+function AdminHome({ totalDrivers, totalPackages }) {
+  return (
+    <div className="admin-home-page">
+      <aside className="sidebar">
+        <div className="logo">QuickShip</div>
+        <ul className="sidebar-menu">
+          <li><Link to="/AdminHome">Home</Link></li>
+          <li><Link to="/DriverList">Drivers</Link></li>
+          <li><Link to="/history">History</Link></li>
+          <li><Link to="/current-packages">Current Packages</Link></li>
+          <li><Link to="/">Log Out</Link></li>
+        </ul>
+      </aside>
+      <main className="main-content">
+        <header className="header">
+          <h1>Admin Inbox</h1>
+        </header>
+        <section className="content">
+          <Routes>
+            <Route path="/history" element={<History />} />
+            <Route path="/current-packages" element={<CurrentPackages />} />
+            <Route path="/drivers" element={<DriverList />} />
+          </Routes>
+          <Routes>
+            <Route path="/drivers" element={null} />
+            <Route path="*" element={
+              <>
+                <h1>Hi, Welcome to QuickShip</h1>
+                <h1 className="summary">Total Summary</h1>
+                <div className="summary-grid">
+                  <div className="summary-card">
+                    <h3>Total Packages</h3>
+                    <p>{totalPackages}</p>
+                  </div>
+                  <div className="summary-card">
+                    <h3>Total Drivers</h3>
+                    <p>{totalDrivers}</p>
+                  </div>
+                </div>
+              </>
+            } />
+          </Routes>
+        </section>
+      </main>
+    </div>
+  );
+}
 
 export default AdminHome;

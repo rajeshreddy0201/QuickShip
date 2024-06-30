@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebase';
+import { ref, set } from 'firebase/database';
+import { auth, database } from '../firebase';
 import './Signup.css';
 
-function Signup() {
+function Signup({ addDriver }) {
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -23,7 +24,20 @@ function Signup() {
       return;
     }
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      const driverData = {
+        name,
+        phoneNumber,
+        email,
+        dob,
+        driversLicense,
+        insurance,
+        username: email.split('@')[0],
+        password
+      };
+      await set(ref(database, 'drivers/' + user.uid), driverData);
+      addDriver(driverData);
       navigate('/driverhome');
     } catch (err) {
       setError(err.message);
@@ -32,15 +46,16 @@ function Signup() {
 
   return (
     <div className="signup-page">
-      <nav className="navbar">
+      <nav className="navbar-i">
+        <div className="logo">QuickShip</div>
         <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/aboutus">About Us</a></li>
-          <li><a href="/contactus">Contact Us</a></li>
+          <li><Link to="/">Home</Link></li>
+          <li><Link to="/aboutus">About Us</Link></li>
+          <li><Link to="/contactus">Contact Us</Link></li>
         </ul>
       </nav>
       <div className="signup-content">
-        <div className="side-image"></div>
+        <div className="side-image1"></div>
         <div className="form-container">
           <h2>Sign Up</h2>
           <form onSubmit={handleSignup}>
@@ -52,7 +67,7 @@ function Signup() {
               required
             />
             <input
-              type="text"
+              type="tel"
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
               placeholder="Phone Number"
@@ -128,7 +143,7 @@ function Signup() {
           </form>
           {error && <p>{error}</p>}
           <div className="signin-link">
-            <p>Already have an account? <a href="/signin">Sign in</a></p>
+            <p>Already have an account? <Link to="/">Sign in</Link></p>
           </div>
         </div>
       </div>
