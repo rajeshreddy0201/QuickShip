@@ -16,7 +16,7 @@ function CurrentPackages({ addPackage }) {
     quantity: ''
   });
   const [showForm, setShowForm] = useState(false);
-  const [showAssignModal, setShowAssignModal] = useState(false);
+  const [showAssignForm, setShowAssignForm] = useState(false);
   const [selectedPackageId, setSelectedPackageId] = useState(null);
   const [selectedDriverId, setSelectedDriverId] = useState('');
 
@@ -43,7 +43,7 @@ function CurrentPackages({ addPackage }) {
     }
 
     const newPackageRef = push(ref(database, 'packages'));
-    set(newPackageRef, newPackage)
+    set(newPackageRef, { ...newPackage, status: 'Not Assigned' })
       .then(() => {
         setNewPackage({ name: '', from: '', to: '', quantity: '' });
         setShowForm(false);
@@ -72,7 +72,7 @@ function CurrentPackages({ addPackage }) {
 
   const handleAssignPackage = (packageId) => {
     setSelectedPackageId(packageId);
-    setShowAssignModal(true);
+    setShowAssignForm(true);
   };
 
   const handleConfirmAssign = () => {
@@ -82,9 +82,10 @@ function CurrentPackages({ addPackage }) {
     }
 
     const packageRef = ref(database, `packages/${selectedPackageId}`);
-    set(packageRef, { ...packageList.find(pkg => pkg.id === selectedPackageId), driverId: selectedDriverId, status: 'Assigned' })
+    const updatedPackage = packageList.find(pkg => pkg.id === selectedPackageId);
+    set(packageRef, { ...updatedPackage, driverId: selectedDriverId, status: 'Assigned' })
       .then(() => {
-        setShowAssignModal(false);
+        setShowAssignForm(false);
         setSelectedPackageId(null);
         setSelectedDriverId('');
       })
@@ -124,6 +125,7 @@ function CurrentPackages({ addPackage }) {
                   <th>From Address</th>
                   <th>To Address</th>
                   <th>Quantity</th>
+                  <th>Status</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -135,6 +137,7 @@ function CurrentPackages({ addPackage }) {
                     <td>{pkg.from}</td>
                     <td>{pkg.to}</td>
                     <td>{pkg.quantity}</td>
+                    <td>{pkg.status}</td>
                     <td>
                       <button className="assign-button" onClick={() => handleAssignPackage(pkg.id)}>Assign Package</button>
                       <button className="delete-button" onClick={() => handleDeletePackage(pkg.id)}>Delete Package</button>
@@ -148,6 +151,7 @@ function CurrentPackages({ addPackage }) {
                     <td><input type="text" name="from" placeholder="From Address" value={newPackage.from} onChange={handleChange} required /></td>
                     <td><input type="text" name="to" placeholder="To Address" value={newPackage.to} onChange={handleChange} required /></td>
                     <td><input type="number" name="quantity" placeholder="Quantity" value={newPackage.quantity} onChange={handleChange} required /></td>
+                    <td></td>
                     <td><button className="add-package-button" onClick={handleAddPackage}>Add Package</button></td>
                   </tr>
                 )}
@@ -156,23 +160,21 @@ function CurrentPackages({ addPackage }) {
             {!showForm && (
               <button className="add-package-button" onClick={() => setShowForm(true)}>Add Package</button>
             )}
+            {showAssignForm && (
+              <div className="assign-form">
+                <h3>Assign Package</h3>
+                <select value={selectedDriverId} onChange={(e) => setSelectedDriverId(e.target.value)}>
+                  <option value="">Select Driver</option>
+                  {driverList.map(driver => (
+                    <option key={driver.id} value={driver.id}>{driver.name}</option>
+                  ))}
+                </select>
+                <button className="confirm-button" onClick={handleConfirmAssign}>Confirm</button>
+                <button className="cancel-button" onClick={() => setShowAssignForm(false)}>Cancel</button>
+              </div>
+            )}
           </div>
         </section>
-        {showAssignModal && (
-          <div className="modal">
-            <div className="modal-content">
-              <h2>Assign Package</h2>
-              <select value={selectedDriverId} onChange={(e) => setSelectedDriverId(e.target.value)}>
-                <option value="">Select Driver</option>
-                {driverList.map(driver => (
-                  <option key={driver.id} value={driver.id}>{driver.name}</option>
-                ))}
-              </select>
-              <button className="confirm-button" onClick={handleConfirmAssign}>Confirm</button>
-              <button className="cancel-button" onClick={() => setShowAssignModal(false)}>Cancel</button>
-            </div>
-          </div>
-        )}
       </main>
     </div>
   );
