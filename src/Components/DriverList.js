@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link, Routes, Route } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { ref, push, set, onValue, remove } from 'firebase/database'; 
-import History from './History';
-import CurrentPackages from './CurrentPackages';
 import { database } from '../firebase'; 
 import './DriverList.css';
 
@@ -30,7 +28,6 @@ function DriverList({ addDriver }) {
       !newDriver.name ||
       !newDriver.phoneNumber ||
       !newDriver.email ||
-      !newDriver.username ||
       !newDriver.password
     ) {
       alert('All fields are required');
@@ -42,7 +39,7 @@ function DriverList({ addDriver }) {
 
     set(newDriverRef, driverData)
       .then(() => {
-        setNewDriver({ name: '', phoneNumber: '', email: '', username: '', password: '' });
+        setNewDriver({ name: '', phoneNumber: '', email: '', password: '' });
         setShowForm(false);
       })
       .catch((error) => {
@@ -88,11 +85,6 @@ function DriverList({ addDriver }) {
           <h1>Admin Inbox</h1>
         </header>
         <section className="content">
-          <Routes>
-            <Route path="/history" element={<History />} />
-            <Route path="/current-packages" element={<CurrentPackages />} />
-            <Route path="/driverlist" element={<DriverList addDriver={addDriver} />} />
-          </Routes>
           <div className="drivers-list">
             <h2>Drivers List</h2>
             <table className="data-table">
@@ -101,7 +93,6 @@ function DriverList({ addDriver }) {
                   <th>Name</th>
                   <th>Phone Number</th>
                   <th>Email</th>
-                  <th>Username</th>
                   <th>Password</th>
                   <th>Actions</th>
                 </tr>
@@ -112,7 +103,6 @@ function DriverList({ addDriver }) {
                     <td>{driver.name}</td>
                     <td>{driver.phoneNumber}</td>
                     <td>{driver.email}</td>
-                    <td>{driver.username}</td>
                     <td>{'*'.repeat(driver.password.length)}</td> {}
                     <td>
                       <button className="delete-button" onClick={() => handleDeleteDriver(driver.id)}>Delete</button>
@@ -151,14 +141,6 @@ function DriverList({ addDriver }) {
                   name="email"
                   placeholder="Email"
                   value={newDriver.email}
-                  onChange={handleChange}
-                  required
-                />
-                <input
-                  type="text"
-                  name="username"
-                  placeholder="Username"
-                  value={newDriver.username}
                   onChange={handleChange}
                   required
                 />
