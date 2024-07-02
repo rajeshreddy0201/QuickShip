@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, Routes, Route } from 'react-router-dom';
-import DriverList from './DriverList';
-import History from './History';
+import { Link } from 'react-router-dom';
 import { ref, push, set, onValue, remove } from 'firebase/database';
 import { database } from '../firebase';
 import './CurrentPackages.css';
@@ -111,10 +109,6 @@ function CurrentPackages({ addPackage }) {
           <h1>Admin Inbox</h1>
         </header>
         <section className="content">
-          <Routes>
-            <Route path="/history" element={<History />} />
-            <Route path="/driverlist" element={<DriverList />} />
-          </Routes>
           <div className="packages-page">
             <h2>Current Packages</h2>
             <table className="packages-table">
