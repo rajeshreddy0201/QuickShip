@@ -108,7 +108,7 @@ body {
 
 .add-driver-form {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex-wrap: wrap;
   gap: 10px;
   margin-top: 20px;
@@ -119,8 +119,9 @@ body {
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 16px;
-  flex: 1;
+  flex: 3;
   min-width: 150px;
+  
 }
 
 .add-driver-button {
