@@ -45,7 +45,6 @@ function DriverList({ addDriver }) {
       .then(() => {
         setNewDriver({ name: '', phoneNumber: '', email: '', username: '', password: '' });
         setShowForm(false);
-        //addDriver(driverData);
       })
       .catch((error) => {
         console.error('Error adding driver: ', error);
@@ -115,7 +114,7 @@ function DriverList({ addDriver }) {
                     <td>{driver.phoneNumber}</td>
                     <td>{driver.email}</td>
                     <td>{driver.username}</td>
-                    <td>{'*'.repeat(driver.password.length)}</td> {/* Masking the password */}
+                    <td>{'*'.repeat(driver.password.length)}</td> {}
                     <td>
                       <button className="delete-button" onClick={() => handleDeleteDriver(driver.id)}>Delete</button>
                     </td>

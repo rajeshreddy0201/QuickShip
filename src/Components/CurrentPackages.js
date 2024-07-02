@@ -8,12 +8,17 @@ import './CurrentPackages.css';
 
 function CurrentPackages({ addPackage }) {
   const [packageList, setPackageList] = useState([]);
+  const [driverList, setDriverList] = useState([]);
   const [newPackage, setNewPackage] = useState({
     name: '',
     from: '',
     to: '',
     quantity: ''
   });
+  const [showForm, setShowForm] = useState(false);
+  const [showAssignModal, setShowAssignModal] = useState(false);
+  const [selectedPackageId, setSelectedPackageId] = useState(null);
+  const [selectedDriverId, setSelectedDriverId] = useState('');
 
   useEffect(() => {
     const packagesRef = ref(database, 'packages');
@@ -21,6 +26,13 @@ function CurrentPackages({ addPackage }) {
       const data = snapshot.val();
       const packagesArray = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
       setPackageList(packagesArray);
+    });
+
+    const driversRef = ref(database, 'drivers');
+    onValue(driversRef, (snapshot) => {
+      const data = snapshot.val();
+      const driversArray = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+      setDriverList(driversArray);
     });
   }, []);
 
@@ -34,6 +46,7 @@ function CurrentPackages({ addPackage }) {
     set(newPackageRef, newPackage)
       .then(() => {
         setNewPackage({ name: '', from: '', to: '', quantity: '' });
+        setShowForm(false);
       })
       .catch((error) => {
         console.error('Error adding package: ', error);
@@ -55,6 +68,29 @@ function CurrentPackages({ addPackage }) {
       ...newPackage,
       [e.target.name]: e.target.value
     });
+  };
+
+  const handleAssignPackage = (packageId) => {
+    setSelectedPackageId(packageId);
+    setShowAssignModal(true);
+  };
+
+  const handleConfirmAssign = () => {
+    if (!selectedDriverId) {
+      alert('Please select a driver');
+      return;
+    }
+
+    const packageRef = ref(database, `packages/${selectedPackageId}`);
+    set(packageRef, { ...packageList.find(pkg => pkg.id === selectedPackageId), driverId: selectedDriverId, status: 'Assigned' })
+      .then(() => {
+        setShowAssignModal(false);
+        setSelectedPackageId(null);
+        setSelectedDriverId('');
+      })
+      .catch((error) => {
+        console.error('Error assigning package: ', error);
+      });
   };
 
   return (
@@ -100,50 +136,43 @@ function CurrentPackages({ addPackage }) {
                     <td>{pkg.to}</td>
                     <td>{pkg.quantity}</td>
                     <td>
-                      <button className="assign-button">Assign Package</button>
+                      <button className="assign-button" onClick={() => handleAssignPackage(pkg.id)}>Assign Package</button>
                       <button className="delete-button" onClick={() => handleDeletePackage(pkg.id)}>Delete Package</button>
                     </td>
                   </tr>
                 ))}
+                {showForm && (
+                  <tr>
+                    <td></td>
+                    <td><input type="text" name="name" placeholder="Package Name" value={newPackage.name} onChange={handleChange} required /></td>
+                    <td><input type="text" name="from" placeholder="From Address" value={newPackage.from} onChange={handleChange} required /></td>
+                    <td><input type="text" name="to" placeholder="To Address" value={newPackage.to} onChange={handleChange} required /></td>
+                    <td><input type="number" name="quantity" placeholder="Quantity" value={newPackage.quantity} onChange={handleChange} required /></td>
+                    <td><button className="add-package-button" onClick={handleAddPackage}>Add Package</button></td>
+                  </tr>
+                )}
               </tbody>
             </table>
-            <div className="add-package-form">
-              <input
-                type="text"
-                name="name"
-                placeholder="Package Name"
-                value={newPackage.name}
-                onChange={handleChange}
-                required
-              />
-              <input
-                type="text"
-                name="from"
-                placeholder="From Address"
-                value={newPackage.from}
-                onChange={handleChange}
-                required
-              />
-              <input
-                type="text"
-                name="to"
-                placeholder="To Address"
-                value={newPackage.to}
-                onChange={handleChange}
-                required
-              />
-              <input
-                type="number"
-                name="quantity"
-                placeholder="Quantity"
-                value={newPackage.quantity}
-                onChange={handleChange}
-                required
-              />
-              <button className="add-package-button" onClick={handleAddPackage}>Add Package</button>
-            </div>
+            {!showForm && (
+              <button className="add-package-button" onClick={() => setShowForm(true)}>Add Package</button>
+            )}
           </div>
         </section>
+        {showAssignModal && (
+          <div className="modal">
+            <div className="modal-content">
+              <h2>Assign Package</h2>
+              <select value={selectedDriverId} onChange={(e) => setSelectedDriverId(e.target.value)}>
+                <option value="">Select Driver</option>
+                {driverList.map(driver => (
+                  <option key={driver.id} value={driver.id}>{driver.name}</option>
+                ))}
+              </select>
+              <button className="confirm-button" onClick={handleConfirmAssign}>Confirm</button>
+              <button className="cancel-button" onClick={() => setShowAssignModal(false)}>Cancel</button>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );

@@ -11,8 +11,6 @@ function Signup({ addDriver }) {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
   const [dob, setDob] = useState('');
-  const [driversLicense, setDriversLicense] = useState('');
-  const [insurance, setInsurance] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
@@ -31,14 +29,11 @@ function Signup({ addDriver }) {
         phoneNumber,
         email,
         dob,
-        driversLicense,
-        insurance,
         username: email.split('@')[0],
         password
       };
       await set(ref(database, 'drivers/' + user.uid), driverData);
-      //addDriver(driverData);
-      navigate('/driverhome');
+      navigate('/'); 
     } catch (err) {
       setError(err.message);
     }
@@ -87,44 +82,6 @@ function Signup({ addDriver }) {
               placeholder="Date of Birth"
               required
             />
-            <div className="radio-group">
-              <label>Do you have a valid driver's license?</label>
-              <label>
-                <input
-                  type="radio"
-                  value="yes"
-                  checked={driversLicense === 'yes'}
-                  onChange={(e) => setDriversLicense(e.target.value)}
-                /> Yes
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  value="no"
-                  checked={driversLicense === 'no'}
-                  onChange={(e) => setDriversLicense(e.target.value)}
-                /> No
-              </label>
-            </div>
-            <div className="radio-group">
-              <label>Do you have proof of insurance?</label>
-              <label>
-                <input
-                  type="radio"
-                  value="yes"
-                  checked={insurance === 'yes'}
-                  onChange={(e) => setInsurance(e.target.value)}
-                /> Yes
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  value="no"
-                  checked={insurance === 'no'}
-                  onChange={(e) => setInsurance(e.target.value)}
-                /> No
-              </label>
-            </div>
             <input
               type="password"
               value={password}

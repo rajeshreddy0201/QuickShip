@@ -11,8 +11,8 @@ function AdminHome({ totalDrivers, totalPackages }) {
       <aside className="sidebar">
         <div className="logo">QuickShip</div>
         <ul className="sidebar-menu">
-          <li><Link to="/AdminHome">Home</Link></li>
-          <li><Link to="/DriverList">Drivers</Link></li>
+          <li><Link to="/adminhome">Home</Link></li> 
+          <li><Link to="/driverlist">Drivers</Link></li>
           <li><Link to="/history">History</Link></li>
           <li><Link to="/current-packages">Current Packages</Link></li>
           <li><Link to="/">Log Out</Link></li>
@@ -37,11 +37,11 @@ function AdminHome({ totalDrivers, totalPackages }) {
                 <div className="summary-grid">
                   <div className="summary-card">
                     <h3>Total Packages</h3>
-                    <p>{totalPackages}</p>
+                    <p>{totalPackages}</p> {}
                   </div>
                   <div className="summary-card">
                     <h3>Total Drivers</h3>
-                    <p>{totalDrivers}</p>
+                    <p>{totalDrivers}</p> {}
                   </div>
                 </div>
               </>

@@ -9,8 +9,10 @@ import DriverHome from './Components/DriverHome';
 import DriverList from './Components/DriverList';
 import History from './Components/History';
 import CurrentPackages from './Components/CurrentPackages';
+import DriverCurrentPackages from './Components/DriverCurrentPackages';
+import DriverHistory from './Components/DriverHistory'; // Import the new component
 import { database } from './firebase';
-import { ref, onValue, push, set } from 'firebase/database';
+import { ref, onValue } from 'firebase/database';
 
 function App() {
   const [totalDrivers, setTotalDrivers] = useState(0);
@@ -30,13 +32,13 @@ function App() {
   }, []);
 
   const addDriver = (driver) => {
-    const newDriverRef = push(ref(database, 'drivers'));
-    set(newDriverRef, driver);
+    const newDriverKey = ref(database, 'drivers').push().key;
+    ref(database, 'drivers/' + newDriverKey).set(driver);
   };
 
   const addPackage = (packageDetails) => {
-    const newPackageRef = push(ref(database, 'packages'));
-    set(newPackageRef, packageDetails);
+    const newPackageKey = ref(database, 'packages').push().key;
+    ref(database, 'packages/' + newPackageKey).set(packageDetails);
   };
 
   return (
@@ -51,6 +53,8 @@ function App() {
         <Route path="/driverlist" element={<DriverList addDriver={addDriver} />} />
         <Route path="/history" element={<History />} />
         <Route path="/current-packages" element={<CurrentPackages addPackage={addPackage} />} />
+        <Route path="/driver-current-packages" element={<DriverCurrentPackages />} />
+        <Route path="/driverhistory" element={<DriverHistory />} /> {/* Add the new route */}
       </Routes>
     </Router>
   );

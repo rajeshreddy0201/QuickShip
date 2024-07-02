@@ -80,10 +80,11 @@
   .form-container input[type="text"],
   .form-container input[type="email"],
   .form-container input[type="password"],
-  .form-container input[type="date"] {
+  .form-container input[type="date"],
+  .form-container input[type="tel"]{
     padding: 15px;
     border: 1px solid #ccc;
-    border-radius: 30px; /* Match the border radius of the login button */
+    border-radius: 30px; 
     font-size: 16px;
   }
   

@@ -1,30 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link, Routes, Route } from 'react-router-dom';
-import { ref, onValue } from 'firebase/database';
-import History from './History';
-import { database } from '../firebase';
+import DriverCurrentPackages from './DriverCurrentPackages';
+import DriverHistory from './DriverHistory'; 
 import './DriverHome.css';
 
 function DriverHome() {
-  const [driverPackages, setDriverPackages] = useState([]);
-
-  useEffect(() => {
-    const driverId = 'driverId'; 
-    const packagesRef = ref(database, `drivers/${driverId}/packages`);
-
-    onValue(packagesRef, (snapshot) => {
-      const data = snapshot.val();
-      setDriverPackages(data ? Object.values(data) : []);
-    });
-  }, []);
-
   return (
     <div className="driver-home-page">
       <aside className="sidebar">
         <div className="logo">QuickShip</div>
         <ul className="sidebar-menu">
           <li><Link to="/driverhome">Home</Link></li>
-          <li><Link to="/history">History</Link></li>
+          <li><Link to="/driver-current-packages">Current Packages</Link></li>
+          <li><Link to="/driverhistory">History</Link></li>
           <li><Link to="/">Log Out</Link></li>
         </ul>
       </aside>
@@ -34,23 +22,20 @@ function DriverHome() {
         </header>
         <section className="content">
           <Routes>
-            <Route path="/history" element={<History />} />
+            <Route path="/driver-current-packages" element={<DriverCurrentPackages />} />
+            <Route path="/driverhistory" element={<DriverHistory />} />
           </Routes>
           <Routes>
             <Route path="*" element={
               <>
-                <h1>Hi, Welcome to QuickShip</h1>
-                <h1 className="summary">Your Packages</h1>
-                <div className="packages-grid">
-                  {driverPackages.map((pkg, index) => (
-                    <div className="package-card" key={index}>
-                      <h3>{pkg.name}</h3>
-                      <p>From: {pkg.from}</p>
-                      <p>To: {pkg.to}</p>
-                      <p>Quantity: {pkg.quantity}</p>
-                      <p>Status: {pkg.status}</p>
-                    </div>
-                  ))}
+                <h1>Welcome to QuickShip</h1>
+                <div className="welcome-content">
+                  <p>QuickShip is your reliable partner for all your package delivery needs. As a driver with QuickShip, you play a crucial role in ensuring timely and safe delivery of packages. Here are some of the features you can explore:</p>
+                  <ul>
+                    <li><strong>Current Packages:</strong> View and manage the packages assigned to you for delivery.</li>
+                    <li><strong>History:</strong> Check the status of your delivered packages and keep track of your delivery history.</li>
+                  </ul>
+                  <p>We value your dedication and commitment to providing excellent service. Thank you for being a part of the QuickShip team!</p>
                 </div>
               </>
             } />
