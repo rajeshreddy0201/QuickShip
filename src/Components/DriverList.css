@@ -82,20 +82,23 @@ body {
 
 .drivers-list h2 {
   margin-bottom: 20px;
+  text-align: center;
+  margin-top:10px;
 }
 
 .data-table {
-  width: 100%;
+  width: 80%;
+  margin: 0 auto;
   border-collapse: collapse;
   margin-bottom: 20px;
+  table-layout: fixed;
 }
 
 .data-table th,
 .data-table td {
   padding: 10px;
-  text-align: left;
+  text-align: center;
   border-bottom: 1px solid #ddd;
-  margin-left: 50px;
 }
 
 .data-table th {
@@ -106,10 +109,30 @@ body {
   background-color: #f9f9f9;
 }
 
+.data-table th:nth-child(1), .data-table td:nth-child(1) {
+  width: 10%;
+}
+
+.data-table th:nth-child(2), .data-table td:nth-child(2) {
+  width: 15%;
+}
+
+.data-table th:nth-child(3), .data-table td:nth-child(3) {
+  width: 25%;
+}
+
+.data-table th:nth-child(4), .data-table td:nth-child(4) {
+  width: 15%;
+}
+
+.data-table th:nth-child(5), .data-table td:nth-child(5) {
+  width: 20%;
+}
+
 .add-driver-form {
   display: flex;
   flex-direction: column;
-  flex-wrap: wrap;
+  align-items: wrap;
   gap: 10px;
   margin-top: 20px;
 }
@@ -119,9 +142,7 @@ body {
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 16px;
-  flex: 3;
-  min-width: 150px;
-  
+  width: 85%;
 }
 
 .add-driver-button {
@@ -132,9 +153,19 @@ body {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  flex: 1;
+  width: 15%;
 }
 
 .add-driver-button:hover {
   background-color: rgba(0, 0, 0, 0.478);
+}
+.submit-button {
+  margin-top: 10px;
+  background-color: black;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 87%;
 }

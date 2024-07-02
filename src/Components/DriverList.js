@@ -152,7 +152,7 @@ function DriverList({ addDriver }) {
                   onChange={handleChange}
                   required
                 />
-                <button className="add-driver-button" onClick={handleAddDriver}>Submit</button>
+                <button className="submit-button" onClick={handleAddDriver}>Submit</button>
               </div>
             )}
           </div>
