@@ -13,7 +13,6 @@ function DriverList({ addDriver }) {
     name: '',
     phoneNumber: '',
     email: '',
-    username: '',
     password: ''
   });
 
