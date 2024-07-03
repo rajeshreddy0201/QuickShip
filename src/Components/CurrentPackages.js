@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ref, push, set, onValue, remove } from 'firebase/database';
+import { ref, push, set, onValue } from 'firebase/database';
 import { database } from '../firebase';
 import './CurrentPackages.css';
 
@@ -23,7 +23,7 @@ function CurrentPackages({ addPackage }) {
     onValue(packagesRef, (snapshot) => {
       const data = snapshot.val();
       const packagesArray = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
-      setPackageList(packagesArray);
+      setPackageList(packagesArray.filter(pkg => pkg.status !== 'Deleted'));
     });
 
     const driversRef = ref(database, 'drivers');
@@ -52,7 +52,9 @@ function CurrentPackages({ addPackage }) {
   };
 
   const handleDeletePackage = (id) => {
-    remove(ref(database, `packages/${id}`))
+    const packageRef = ref(database, `packages/${id}`);
+    const updatedPackage = packageList.find(pkg => pkg.id === id);
+    set(packageRef, { ...updatedPackage, status: 'Deleted' })
       .then(() => {
         setPackageList(packageList.filter(pkg => pkg.id !== id));
       })
@@ -81,8 +83,7 @@ function CurrentPackages({ addPackage }) {
 
     const packageRef = ref(database, `packages/${selectedPackageId}`);
     const updatedPackage = packageList.find(pkg => pkg.id === selectedPackageId);
-    const selectedDriver = driverList.find(driver => driver.id === selectedDriverId);
-    set(packageRef, { ...updatedPackage, driverId: selectedDriverId, driverName: selectedDriver.name, status: 'Assigned' })
+    set(packageRef, { ...updatedPackage, driverId: selectedDriverId, status: 'Assigned' })
       .then(() => {
         setShowAssignForm(false);
         setSelectedPackageId(null);
@@ -135,7 +136,7 @@ function CurrentPackages({ addPackage }) {
                     <td>{pkg.status}</td>
                     <td>
                       <button className="assign-button" onClick={() => handleAssignPackage(pkg.id)}>Assign Package</button>
-                      <button className="delete-button1" onClick={() => handleDeletePackage(pkg.id)}>Delete Package</button>
+                      <button className="delete-button" onClick={() => handleDeletePackage(pkg.id)}>Delete Package</button>
                     </td>
                   </tr>
                 ))}

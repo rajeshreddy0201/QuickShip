@@ -1,21 +1,27 @@
-import React from 'react';
-import { Link, Routes, Route } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { ref, onValue } from 'firebase/database';
-import DriverList from './DriverList';
-import CurrentPackages from './CurrentPackages';
 import { database } from '../firebase';
 import './History.css';
 
 function History() {
-  const [packageHistory, setPackageHistory] = React.useState([]);
+  const [packageHistory, setPackageHistory] = useState([]);
+  const [driverList, setDriverList] = useState([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const packagesRef = ref(database, 'packages');
     onValue(packagesRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
         setPackageHistory(Object.entries(data).map(([id, pkg], index) => ({ id, index: index + 1, ...pkg })));
       }
+    });
+
+    const driversRef = ref(database, 'drivers');
+    onValue(driversRef, (snapshot) => {
+      const data = snapshot.val();
+      const driversArray = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+      setDriverList(driversArray);
     });
   }, []);
 
@@ -36,11 +42,6 @@ function History() {
           <h1>Admin Inbox</h1>
         </header>
         <section className="content">
-          <Routes>
-          <Route path="/history" element={<History />} />
-            <Route path="/current-packages" element={<CurrentPackages />} />
-            <Route path="/driverlist" element={<DriverList />} />
-          </Routes>
           <div className="history-page">
             <h2>Package History</h2>
             <table className="history-table">
@@ -56,17 +57,20 @@ function History() {
                 </tr>
               </thead>
               <tbody>
-                {packageHistory.map((pkg, index) => (
-                  <tr key={pkg.id}>
-                    <td>{index + 1}</td>
-                    <td>{pkg.name}</td>
-                    <td>{pkg.from}</td>
-                    <td>{pkg.to}</td>
-                    <td>{pkg.quantity}</td>
-                    <td>{pkg.driverName || 'N/A'}</td>
-                    <td>{pkg.status}</td>
-                  </tr>
-                ))}
+                {packageHistory.map((pkg, index) => {
+                  const driver = driverList.find(driver => driver.id === pkg.driverId);
+                  return (
+                    <tr key={pkg.id}>
+                      <td>{index + 1}</td>
+                      <td>{pkg.name}</td>
+                      <td>{pkg.from}</td>
+                      <td>{pkg.to}</td>
+                      <td>{pkg.quantity}</td>
+                      <td>{driver ? driver.name : 'Not Assigned'}</td>
+                      <td>{pkg.status}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
