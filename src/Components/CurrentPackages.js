@@ -81,7 +81,8 @@ function CurrentPackages({ addPackage }) {
 
     const packageRef = ref(database, `packages/${selectedPackageId}`);
     const updatedPackage = packageList.find(pkg => pkg.id === selectedPackageId);
-    set(packageRef, { ...updatedPackage, driverId: selectedDriverId, status: 'Assigned' })
+    const selectedDriver = driverList.find(driver => driver.id === selectedDriverId);
+    set(packageRef, { ...updatedPackage, driverId: selectedDriverId, driverName: selectedDriver.name, status: 'Assigned' })
       .then(() => {
         setShowAssignForm(false);
         setSelectedPackageId(null);

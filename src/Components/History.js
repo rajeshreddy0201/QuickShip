@@ -37,7 +37,7 @@ function History() {
         </header>
         <section className="content">
           <Routes>
-                    <Route path="/history" element={<History />} />
+          <Route path="/history" element={<History />} />
             <Route path="/current-packages" element={<CurrentPackages />} />
             <Route path="/driverlist" element={<DriverList />} />
           </Routes>
