@@ -1,24 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { Link, Routes, Route } from 'react-router-dom';
 import { ref, onValue } from 'firebase/database';
-import { database } from '../firebase';
+import { database, auth } from '../firebase'; 
 import DriverHistory from './DriverHistory';
 import './DriverCurrentPackages.css';
 
 function DriverCurrentPackages() {
   const [currentPackages, setCurrentPackages] = useState([]);
+  const [driverId, setDriverId] = useState(null);
 
   useEffect(() => {
-    const driverId = 'driverId'; // Replace with actual driver ID from authentication context
-    const packagesRef = ref(database, 'packages');
-
-    onValue(packagesRef, (snapshot) => {
-      const data = snapshot.val();
-      const packagesArray = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
-      const assignedPackages = packagesArray.filter(pkg => pkg.driverId === driverId);
-      setCurrentPackages(assignedPackages);
+    const assign = auth.onAuthStateChanged(user => {
+      if (user) {
+        setDriverId(user.uid); 
+      } else {
+        setDriverId(null);
+      }
     });
+
+    return () => assign(); 
   }, []);
+
+  useEffect(() => {
+    if (driverId) {
+      const packagesRef = ref(database, 'packages');
+
+      onValue(packagesRef, (snapshot) => {
+        const data = snapshot.val();
+        const packagesArray = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+        const assignedPackages = packagesArray.filter(pkg => pkg.driverId === driverId);
+        setCurrentPackages(assignedPackages);
+      });
+    }
+  }, [driverId]);
 
   return (
     <div className="driver-home-page">
