@@ -151,7 +151,7 @@ body {
   color: white;
   padding: 10px 20px;
   border: none;
-  border-radius: 5px;
+  border-radius: 105px;
   cursor: pointer;
   width: 15%;
 }
@@ -168,4 +168,14 @@ body {
   border-radius: 5px;
   cursor: pointer;
   width: 87%;
+}
+.delete-button{
+  margin-top: 10px;
+  background-color: rgb(244, 57, 57);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 105px;
+  cursor: pointer;
+  width: 60%;
 }

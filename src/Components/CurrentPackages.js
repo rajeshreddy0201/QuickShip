@@ -134,7 +134,7 @@ function CurrentPackages({ addPackage }) {
                     <td>{pkg.status}</td>
                     <td>
                       <button className="assign-button" onClick={() => handleAssignPackage(pkg.id)}>Assign Package</button>
-                      <button className="delete-button" onClick={() => handleDeletePackage(pkg.id)}>Delete Package</button>
+                      <button className="delete-button1" onClick={() => handleDeletePackage(pkg.id)}>Delete Package</button>
                     </td>
                   </tr>
                 ))}
