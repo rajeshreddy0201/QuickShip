@@ -37,7 +37,7 @@ function History() {
         </header>
         <section className="content">
           <Routes>
-            <Route path="/history" element={<History />} />
+                    <Route path="/history" element={<History />} />
             <Route path="/current-packages" element={<CurrentPackages />} />
             <Route path="/driverlist" element={<DriverList />} />
           </Routes>
@@ -63,7 +63,7 @@ function History() {
                     <td>{pkg.from}</td>
                     <td>{pkg.to}</td>
                     <td>{pkg.quantity}</td>
-                    <td>{pkg.driver}</td>
+                    <td>{pkg.driverName || 'N/A'}</td>
                     <td>{pkg.status}</td>
                   </tr>
                 ))}
@@ -75,4 +75,5 @@ function History() {
     </div>
   );
 }
+
 export default History;
