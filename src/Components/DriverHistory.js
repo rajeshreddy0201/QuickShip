@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, Routes, Route } from 'react-router-dom';
-import { ref, onValue, update } from 'firebase/database';
+import { ref, onValue } from 'firebase/database';
 import { database, auth } from '../firebase';
-import DriverHistory from './DriverHistory';
-import './DriverCurrentPackages.css';
+import './DriverHistory.css';
 
-function DriverCurrentPackages() {
-  const [currentPackages, setCurrentPackages] = useState([]);
+function DriverHistory() {
+  const [historyPackages, setHistoryPackages] = useState([]);
   const [driverId, setDriverId] = useState(null);
 
   useEffect(() => {
@@ -28,8 +27,8 @@ function DriverCurrentPackages() {
       onValue(packagesRef, (snapshot) => {
         const data = snapshot.val();
         const packagesArray = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
-        const assignedPackages = packagesArray.filter(pkg => pkg.driverId === driverId);
-        setCurrentPackages(assignedPackages);
+        const deliveredPackages = packagesArray.filter(pkg => pkg.driverId === driverId && pkg.status === 'Delivered');
+        setHistoryPackages(deliveredPackages);
       });
     }
   }, [driverId]);
@@ -62,25 +61,19 @@ function DriverCurrentPackages() {
       </aside>
       <main className="main-content">
         <header className="header">
-          <h1>Driver Inbox</h1>
+          <h1>Driver History</h1>
         </header>
         <section className="content">
-          <Routes>
-            <Route path="/driverhistory" element={<DriverHistory />} />
-          </Routes>
-          <div className="packages-page">
-            <h2>Current Packages</h2>
+          <div className="history-page">
+            <h2>Delivered Packages</h2>
             <div className="packages-grid">
-              {currentPackages.map((pkg, index) => (
+              {historyPackages.map((pkg, index) => (
                 <div className="package-card" key={pkg.id}>
                   <h3>{pkg.name}</h3>
                   <p>From: {pkg.from}</p>
                   <p>To: {pkg.to}</p>
                   <p>Quantity: {pkg.quantity}</p>
                   <p>Status: {pkg.status}</p>
-                  {pkg.status !== 'Delivered' && (
-                    <button onClick={() => handleMarkDelivered(pkg.id)}>Mark as Delivered</button>
-                  )}
                 </div>
               ))}
             </div>
@@ -91,4 +84,4 @@ function DriverCurrentPackages() {
   );
 }
 
-export default DriverCurrentPackages;
+export default DriverHistory;
