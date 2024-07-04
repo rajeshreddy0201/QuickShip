@@ -35,7 +35,7 @@ function DriverCurrentPackages() {
   }, [driverId]);
 
   const handleMarkDelivered = (packageId) => {
-    const packageRef = ref(database, packages/${packageId});
+    const packageRef = ref(database, 'packages/${packageId}');
     update(packageRef, { status: 'Delivered' })
       .then(() => {
         setCurrentPackages(prevPackages =>
