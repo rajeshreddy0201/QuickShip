@@ -28,23 +28,25 @@ function DriverCurrentPackages() {
       onValue(packagesRef, (snapshot) => {
         const data = snapshot.val();
         const packagesArray = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
-        const assignedPackages = packagesArray.filter(pkg => pkg.driverId === driverId && pkg.status === 'Assigned');
+        const assignedPackages = packagesArray.filter(pkg => pkg.driverId === driverId && pkg.status !== 'Delivered');
         setCurrentPackages(assignedPackages);
       });
     }
   }, [driverId]);
 
-  const handleDeliverPackage = (packageId) => {
-    const packageRef = ref(database, 'packages/${packageId}');
+  const handleMarkDelivered = (packageId) => {
+    const packageRef = ref(database, `packages/${packageId}`);
     update(packageRef, { status: 'Delivered' })
       .then(() => {
-        setCurrentPackages(currentPackages.filter(pkg => pkg.id !== packageId));
+        setCurrentPackages(prevPackages =>
+          prevPackages.filter(pkg => pkg.id !== packageId)
+        );
       })
       .catch((error) => {
-        console.error('Error updating package: ', error);
+        console.error('Error marking package as delivered: ', error);
       });
   };
-//test
+
   return (
     <div className="driver-home-page">
       <aside className="sidebar">
@@ -74,7 +76,9 @@ function DriverCurrentPackages() {
                   <p>To: {pkg.to}</p>
                   <p>Quantity: {pkg.quantity}</p>
                   <p>Status: {pkg.status}</p>
-                  <button onClick={() => handleDeliverPackage(pkg.id)}>Deliver</button>
+                  {pkg.status !== 'Delivered' && (
+                    <button onClick={() => handleMarkDelivered(pkg.id)}>Delivered</button>
+                  )}
                 </div>
               ))}
             </div>

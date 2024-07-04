@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link, Routes, Route } from 'react-router-dom';
-import { ref, onValue, update } from 'firebase/database';
+import { Link} from 'react-router-dom';
+import { ref, onValue } from 'firebase/database';
 import { database, auth } from '../firebase';
 import './DriverHistory.css';
 
 function DriverHistory() {
-  const [currentPackages, setCurrentPackages] = useState([]);
+  const [historyPackages, setHistoryPackages] = useState([]);
   const [driverId, setDriverId] = useState(null);
 
   useEffect(() => {
@@ -27,22 +27,11 @@ function DriverHistory() {
       onValue(packagesRef, (snapshot) => {
         const data = snapshot.val();
         const packagesArray = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
-        const assignedPackages = packagesArray.filter(pkg => pkg.driverId === driverId && pkg.status === 'Delivered');
-        setCurrentPackages(assignedPackages);
+        const deliveredPackages = packagesArray.filter(pkg => pkg.driverId === driverId && pkg.status === 'Delivered');
+        setHistoryPackages(deliveredPackages);
       });
     }
   }, [driverId]);
-
-  const handleDeliverPackage = (packageId) => {
-    const packageRef = ref(database, `packages/${packageId}`);
-    update(packageRef, { status: 'Delivered' })
-      .then(() => {
-        setCurrentPackages(currentPackages.filter(pkg => pkg.id !== packageId));
-      })
-      .catch((error) => {
-        console.error('Error updating package: ', error);
-      });
-  };
 
   return (
     <div className="driver-home-page">
@@ -57,16 +46,13 @@ function DriverHistory() {
       </aside>
       <main className="main-content">
         <header className="header">
-          <h1>Driver Inbox</h1>
+          <h1>Driver History</h1>
         </header>
         <section className="content">
-          <Routes>
-            <Route path="/driverhistory" element={<DriverHistory />} />
-          </Routes>
-          <div className="packages-page">
+          <div className="history-page">
             <h2>Delivered Packages</h2>
             <div className="packages-grid">
-              {currentPackages.map((pkg, index) => (
+              {historyPackages.map((pkg, index) => (
                 <div className="package-card" key={pkg.id}>
                   <h3>{pkg.name}</h3>
                   <p>From: {pkg.from}</p>
