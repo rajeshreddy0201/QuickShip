@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, Routes, Route } from 'react-router-dom';
-import { ref, onValue } from 'firebase/database';
+import { ref, onValue, update } from 'firebase/database';
 import { database, auth } from '../firebase';
 import './DriverHistory.css';
 
 function DriverHistory() {
-  const [historyPackages, setHistoryPackages] = useState([]);
+  const [currentPackages, setCurrentPackages] = useState([]);
   const [driverId, setDriverId] = useState(null);
 
   useEffect(() => {
@@ -27,24 +27,20 @@ function DriverHistory() {
       onValue(packagesRef, (snapshot) => {
         const data = snapshot.val();
         const packagesArray = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
-        const deliveredPackages = packagesArray.filter(pkg => pkg.driverId === driverId && pkg.status === 'Delivered');
-        setHistoryPackages(deliveredPackages);
+        const assignedPackages = packagesArray.filter(pkg => pkg.driverId === driverId && pkg.status === 'Delivered');
+        setCurrentPackages(assignedPackages);
       });
     }
   }, [driverId]);
 
-  const handleMarkDelivered = (packageId) => {
-    const packageRef = ref(database, 'packages/${packageId}');
+  const handleDeliverPackage = (packageId) => {
+    const packageRef = ref(database, `packages/${packageId}`);
     update(packageRef, { status: 'Delivered' })
       .then(() => {
-        setCurrentPackages(prevPackages =>
-          prevPackages.map(pkg =>
-            pkg.id === packageId ? { ...pkg, status: 'Delivered' } : pkg
-          )
-        );
+        setCurrentPackages(currentPackages.filter(pkg => pkg.id !== packageId));
       })
       .catch((error) => {
-        console.error('Error marking package as delivered: ', error);
+        console.error('Error updating package: ', error);
       });
   };
 
@@ -61,13 +57,16 @@ function DriverHistory() {
       </aside>
       <main className="main-content">
         <header className="header">
-          <h1>Driver History</h1>
+          <h1>Driver Inbox</h1>
         </header>
         <section className="content">
-          <div className="history-page">
+          <Routes>
+            <Route path="/driverhistory" element={<DriverHistory />} />
+          </Routes>
+          <div className="packages-page">
             <h2>Delivered Packages</h2>
             <div className="packages-grid">
-              {historyPackages.map((pkg, index) => (
+              {currentPackages.map((pkg, index) => (
                 <div className="package-card" key={pkg.id}>
                   <h3>{pkg.name}</h3>
                   <p>From: {pkg.from}</p>
