@@ -35,7 +35,7 @@ function DriverCurrentPackages() {
   }, [driverId]);
 
   const handleDeliverPackage = (packageId) => {
-    const packageRef = ref(database, `packages/${packageId}`);
+    const packageRef = ref(database, 'packages/${packageId}');
     update(packageRef, { status: 'Delivered' })
       .then(() => {
         setCurrentPackages(currentPackages.filter(pkg => pkg.id !== packageId));
@@ -44,7 +44,7 @@ function DriverCurrentPackages() {
         console.error('Error updating package: ', error);
       });
   };
-
+//test
   return (
     <div className="driver-home-page">
       <aside className="sidebar">
