@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, Routes, Route } from 'react-router-dom';
-import { ref, onValue } from 'firebase/database';
-import { database, auth } from '../firebase'; 
+import { ref, onValue, update } from 'firebase/database';
+import { database, auth } from '../firebase';
 import DriverHistory from './DriverHistory';
 import './DriverCurrentPackages.css';
 
@@ -12,13 +12,13 @@ function DriverCurrentPackages() {
   useEffect(() => {
     const assign = auth.onAuthStateChanged(user => {
       if (user) {
-        setDriverId(user.uid); 
+        setDriverId(user.uid);
       } else {
         setDriverId(null);
       }
     });
 
-    return () => assign(); 
+    return () => assign();
   }, []);
 
   useEffect(() => {
@@ -33,6 +33,21 @@ function DriverCurrentPackages() {
       });
     }
   }, [driverId]);
+
+  const handleMarkDelivered = (packageId) => {
+    const packageRef = ref(database, packages/${packageId});
+    update(packageRef, { status: 'Delivered' })
+      .then(() => {
+        setCurrentPackages(prevPackages =>
+          prevPackages.map(pkg =>
+            pkg.id === packageId ? { ...pkg, status: 'Delivered' } : pkg
+          )
+        );
+      })
+      .catch((error) => {
+        console.error('Error marking package as delivered: ', error);
+      });
+  };
 
   return (
     <div className="driver-home-page">
@@ -63,6 +78,9 @@ function DriverCurrentPackages() {
                   <p>To: {pkg.to}</p>
                   <p>Quantity: {pkg.quantity}</p>
                   <p>Status: {pkg.status}</p>
+                  {pkg.status !== 'Delivered' && (
+                    <button onClick={() => handleMarkDelivered(pkg.id)}>Mark as Delivered</button>
+                  )}
                 </div>
               ))}
             </div>
