@@ -77,7 +77,7 @@ function DriverCurrentPackages() {
                   <p>Quantity: {pkg.quantity}</p>
                   <p>Status: {pkg.status}</p>
                   {pkg.status !== 'Delivered' && (
-                    <button onClick={() => handleMarkDelivered(pkg.id)}>Delivered</button>
+                    <button onClick={() => handleMarkDelivered(pkg.id)}>Deliver</button>
                   )}
                 </div>
               ))}
