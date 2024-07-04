@@ -1,23 +1,53 @@
-// src/Components/DriverHistory.js
 import React, { useState, useEffect } from 'react';
-import { Link} from 'react-router-dom';
-import { ref, onValue } from 'firebase/database';
-import { database } from '../firebase';
-import './DriverHome.css'; // Use the same CSS as DriverHome for consistency
+import { Link, Routes, Route } from 'react-router-dom';
+import { ref, onValue, update } from 'firebase/database';
+import { database, auth } from '../firebase';
+import DriverHistory from './DriverHistory';
+import './DriverCurrentPackages.css';
 
-function DriverHistory() {
-  const [history, setHistory] = useState([]);
+function DriverCurrentPackages() {
+  const [currentPackages, setCurrentPackages] = useState([]);
+  const [driverId, setDriverId] = useState(null);
 
   useEffect(() => {
-    const driverId = 'driverId'; // Replace with actual driver ID from authentication context
-    const packagesRef = ref(database, `drivers/${driverId}/packages`);
-
-    onValue(packagesRef, (snapshot) => {
-      const data = snapshot.val();
-      const packagesArray = data ? Object.values(data).filter(pkg => pkg.status === 'Delivered') : [];
-      setHistory(packagesArray);
+    const assign = auth.onAuthStateChanged(user => {
+      if (user) {
+        setDriverId(user.uid);
+      } else {
+        setDriverId(null);
+      }
     });
+
+    return () => assign();
   }, []);
+
+  useEffect(() => {
+    if (driverId) {
+      const packagesRef = ref(database, 'packages');
+
+      onValue(packagesRef, (snapshot) => {
+        const data = snapshot.val();
+        const packagesArray = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+        const assignedPackages = packagesArray.filter(pkg => pkg.driverId === driverId);
+        setCurrentPackages(assignedPackages);
+      });
+    }
+  }, [driverId]);
+
+  const handleMarkDelivered = (packageId) => {
+    const packageRef = ref(database, packages/${packageId});
+    update(packageRef, { status: 'Delivered' })
+      .then(() => {
+        setCurrentPackages(prevPackages =>
+          prevPackages.map(pkg =>
+            pkg.id === packageId ? { ...pkg, status: 'Delivered' } : pkg
+          )
+        );
+      })
+      .catch((error) => {
+        console.error('Error marking package as delivered: ', error);
+      });
+  };
 
   return (
     <div className="driver-home-page">
@@ -35,31 +65,30 @@ function DriverHistory() {
           <h1>Driver Inbox</h1>
         </header>
         <section className="content">
-          <h2>Delivered Packages</h2>
-          <table className="history-table">
-            <thead>
-              <tr>
-                <th>Package Name</th>
-                <th>From Address</th>
-                <th>To Address</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {history.map((pkg, index) => (
-                <tr key={index}>
-                  <td>{pkg.name}</td>
-                  <td>{pkg.from}</td>
-                  <td>{pkg.to}</td>
-                  <td>{pkg.status}</td>
-                </tr>
+          <Routes>
+            <Route path="/driverhistory" element={<DriverHistory />} />
+          </Routes>
+          <div className="packages-page">
+            <h2>Current Packages</h2>
+            <div className="packages-grid">
+              {currentPackages.map((pkg, index) => (
+                <div className="package-card" key={pkg.id}>
+                  <h3>{pkg.name}</h3>
+                  <p>From: {pkg.from}</p>
+                  <p>To: {pkg.to}</p>
+                  <p>Quantity: {pkg.quantity}</p>
+                  <p>Status: {pkg.status}</p>
+                  {pkg.status !== 'Delivered' && (
+                    <button onClick={() => handleMarkDelivered(pkg.id)}>Mark as Delivered</button>
+                  )}
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+          </div>
         </section>
       </main>
     </div>
   );
 }
 
-export default DriverHistory;
+export default DriverCurrentPackages;
