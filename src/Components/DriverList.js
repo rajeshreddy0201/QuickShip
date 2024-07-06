@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ref, push, set, onValue, remove } from 'firebase/database'; 
-import { database } from '../firebase'; 
+import { ref, set, onValue, remove } from 'firebase/database'; 
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { database, auth } from '../firebase'; 
 import './DriverList.css';
 
 function DriverList({ addDriver }) {
@@ -35,15 +36,22 @@ function DriverList({ addDriver }) {
     }
 
     const driverData = { ...newDriver };
-    const newDriverRef = push(ref(database, 'drivers')); 
 
-    set(newDriverRef, driverData)
-      .then(() => {
-        setNewDriver({ name: '', phoneNumber: '', email: '', password: '' });
-        setShowForm(false);
+    createUserWithEmailAndPassword(auth, newDriver.email, newDriver.password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        const newDriverRef = ref(database, 'drivers/' + user.uid); 
+        set(newDriverRef, driverData)
+          .then(() => {
+            setNewDriver({ name: '', phoneNumber: '', email: '', password: '' });
+            setShowForm(false);
+          })
+          .catch((error) => {
+            console.error('Error adding driver to database: ', error);
+          });
       })
       .catch((error) => {
-        console.error('Error adding driver: ', error);
+        console.error('Error creating driver account: ', error);
       });
   };
 
@@ -59,7 +67,7 @@ function DriverList({ addDriver }) {
   };
 
   const handleDeleteDriver = (id) => {
-    remove(ref(database, 'drivers/${id}'))
+    remove(ref(database, `drivers/${id}`))
       .then(() => {
         setDrivers(prevDrivers => prevDrivers.filter(driver => driver.id !== id));
       })
@@ -103,7 +111,7 @@ function DriverList({ addDriver }) {
                     <td>{driver.name}</td>
                     <td>{driver.phoneNumber}</td>
                     <td>{driver.email}</td>
-                    <td>{'*'.repeat(driver.password.length)}</td> {}
+                    <td>{'*'.repeat(driver.password.length)}</td>
                     <td>
                       <button className="delete-button" onClick={() => handleDeleteDriver(driver.id)}>Delete</button>
                     </td>
