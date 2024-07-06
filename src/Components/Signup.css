@@ -84,7 +84,7 @@
   .form-container input[type="tel"]{
     padding: 15px;
     border: 1px solid #ccc;
-    border-radius: 30px; 
+    border-radius: 10px; 
     font-size: 16px;
   }
   
