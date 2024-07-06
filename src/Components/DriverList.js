@@ -69,7 +69,7 @@ function DriverList({ addDriver }) {
   const handleDeleteDriver = (id) => {
     remove(ref(database, 'drivers/${id}'))
       .then(() => {
-        setDrivers(drivers.filter(driver => driver.id !== id));
+        setDrivers(prevDrivers => prevDrivers.filter(driver => driver.id !== id));
       })
       .catch((error) => {
         console.error('Error deleting driver: ', error);
@@ -111,7 +111,7 @@ function DriverList({ addDriver }) {
                     <td>{driver.name}</td>
                     <td>{driver.phoneNumber}</td>
                     <td>{driver.email}</td>
-                    <td>{'*'.repeat(driver.password.length)}</td> 
+                    <td>{'*'.repeat(driver.password.length)}</td>
                     <td>
                       <button className="delete-button" onClick={() => handleDeleteDriver(driver.id)}>Delete</button>
                     </td>
