@@ -10,7 +10,7 @@ import DriverList from './Components/DriverList';
 import History from './Components/History';
 import CurrentPackages from './Components/CurrentPackages';
 import DriverCurrentPackages from './Components/DriverCurrentPackages';
-import DriverHistory from './Components/DriverHistory'; // Import the new component
+import DriverHistory from './Components/DriverHistory'; 
 import { database } from './firebase';
 import { ref, onValue } from 'firebase/database';
 //test git
