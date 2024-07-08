@@ -8,12 +8,7 @@ function AboutUs() {
       <aside className="sidebar">
         <div className="logo">QuickShip</div>
         <ul className="sidebar-menu">
-          <li><Link to="/adminhome">Home</Link></li>
-          <li><Link to="/driverlist">Drivers</Link></li>
-          <li><Link to="/history">History</Link></li>
-          <li><Link to="/current-packages">Current Packages</Link></li>
-          <li><Link to="/aboutus">About Us</Link></li>
-          <li><Link to="/">Log Out</Link></li>
+          <li><Link to="/">Home</Link></li>
         </ul>
       </aside>
       <main className="main-content">
@@ -32,14 +27,6 @@ function AboutUs() {
             <h2>Our Team</h2>
             <p>
               We have a dedicated team of professionals who are committed to providing the best delivery service experience. From our customer service representatives to our drivers, each member of our team plays a crucial role in ensuring your packages are delivered on time and in perfect condition.
-            </p>
-            <h2>Contact Us</h2>
-            <p>
-              If you have any questions or need assistance, feel free to contact us:
-              <br />
-              Email: support@quickship.com
-              <br />
-              Phone: +1 234 567 890
             </p>
           </div>
         </section>
