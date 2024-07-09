@@ -45,6 +45,7 @@ function DriverList({ addDriver }) {
           .then(() => {
             setNewDriver({ name: '', phoneNumber: '', email: '', password: '' });
             setShowForm(false);
+            console.log('Driver added successfully');
           })
           .catch((error) => {
             console.error('Error adding driver to database: ', error);
