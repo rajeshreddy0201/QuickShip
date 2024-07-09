@@ -1,7 +1,5 @@
 import React from 'react';
-import { Link, Routes, Route } from 'react-router-dom';
-import DriverCurrentPackages from './DriverCurrentPackages';
-import DriverHistory from './DriverHistory'; 
+import { Link, Routes, Route } from 'react-router-dom'; 
 import './DriverHome.css';
 
 function DriverHome() {
@@ -21,10 +19,6 @@ function DriverHome() {
           <h1>Driver Inbox</h1>
         </header>
         <section className="content">
-          <Routes>
-            <Route path="/driver-current-packages" element={<DriverCurrentPackages />} />
-            <Route path="/driverhistory" element={<DriverHistory />} />
-          </Routes>
           <Routes>
             <Route path="*" element={
               <>

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Link, Routes, Route } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { ref, onValue, update } from 'firebase/database';
 import { database, auth } from '../firebase';
-import DriverHistory from './DriverHistory';
+
 import './DriverCurrentPackages.css';
 
 function DriverCurrentPackages() {
@@ -63,9 +63,6 @@ function DriverCurrentPackages() {
           <h1>Driver Inbox</h1>
         </header>
         <section className="content">
-          <Routes>
-            <Route path="/driverhistory" element={<DriverHistory />} />
-          </Routes>
           <div className="packages-page">
             <h2>Current Packages</h2>
             <div className="packages-grid">
