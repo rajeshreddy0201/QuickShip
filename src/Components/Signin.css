@@ -51,7 +51,7 @@
 
 .side-image {
   flex: 1;
-  background: url('./side-image.jpg') no-repeat center center; /* Image from the components directory */
+  background: url('./side-image.jpg') no-repeat center center; 
   background-size: cover;
 }
 
